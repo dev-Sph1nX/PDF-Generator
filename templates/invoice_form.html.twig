@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Formulaire de Facture</title>
+		<!-- Styles CSS pour le formulaire -->
+		<style>
+			/* Styles CSS pour le formulaire */
+			body {
+				font-family: Arial, sans-serif;
+				margin: 20px;
+			}
+			form {
+				max-width: 600px;
+				margin: 0 auto;
+			}
+			label {
+				display: block;
+				margin-bottom: 5px;
+			}
+			input[type="text"],
+			input[type="number"] {
+				width: 100%;
+				padding: 8px;
+				margin-bottom: 10px;
+			}
+			/* ... d'autres styles si nécessaire */
+		</style>
+	</head>
+	<body>
+		<h1>Formulaire de Facture</h1>
+		{{ form_start(form) }}
+		<div>
+			{{ form_row(form.clientName, {'label': 'Nom du client'}) }}
+		</div>
+		<h2>Produits achetés</h2>
+		<div id="products-list" data-prototype="{{ form_widget(form.products.vars.prototype)|e }}">
+			{{ form_errors(form.products) }}
+			{% for product in form.products %}
+				<div>
+					{{ form_row(product.name, {'label': 'Nom du produit'}) }}
+					{{ form_row(product.quantity, {'label': 'Quantité'}) }}
+				</div>
+			{% endfor %}
+		</div>
+		<button type="button" id="add-product">Ajouter un produit</button>
+		<br><br>
+		<button type="submit">Générer PDF</button>
+		{{ form_end(form) }}
+
+		<script>
+			const addButton = document.getElementById('add-product');
+const productsList = document.getElementById('products-list');
+
+addButton.addEventListener('click', function () {
+const prototype = productsList.getAttribute('data-prototype');
+const index = productsList.querySelectorAll('div').length;
+const newForm = prototype.replace(/__name__/g, index);
+const div = document.createElement('div');
+div.innerHTML = newForm;
+productsList.appendChild(div.firstChild);
+});
+		</script>
+	</body>
+</html>
